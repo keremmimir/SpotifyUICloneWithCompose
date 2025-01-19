@@ -1,6 +1,5 @@
 package com.example.spotifyuiclonewithcompose.uix
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -12,15 +11,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -41,7 +38,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.spotifyuiclonewithcompose.R
 import com.example.spotifyuiclonewithcompose.data.entity.TopItem
 import com.example.spotifyuiclonewithcompose.ui.theme.BackgroundColor
@@ -49,7 +45,7 @@ import com.example.spotifyuiclonewithcompose.ui.theme.TopCardColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomePage(navController: NavController) {
+fun HomePage() {
     val topItemList = remember { mutableStateListOf<TopItem>() }
     val recentlyItemList = remember { mutableStateListOf<TopItem>() }
     val releasesItemList = remember { mutableStateListOf<TopItem>() }
@@ -109,188 +105,117 @@ fun HomePage(navController: NavController) {
                 .background(color = BackgroundColor)
         ) {
             item {
-                LazyVerticalGrid(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp)
-                        .padding(10.dp),
-                    columns = GridCells.Fixed(2)
-                ) {
-                    items(count = topItemList.count()) {
-                        val item = topItemList[it]
-                        Card(
-                            modifier = Modifier.padding(5.dp),
-                            shape = RoundedCornerShape(5.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(TopCardColor),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Image(
-                                    painter = painterResource(item.image),
-                                    contentDescription = "",
-                                    modifier = Modifier.size(60.dp, 60.dp)
-                                )
-                                Text(
-                                    item.name,
-                                    color = Color.White,
-                                    fontSize = 14.sp,
-                                    fontFamily = FontFamily.SansSerif,
-                                    fontWeight = FontWeight.Medium,
-                                    modifier = Modifier.padding(5.dp)
-                                )
-                            }
-                        }
-                    }
-                }
+                lazyTopItem(topItemList)
             }
             item {
                 Spacer(Modifier.height(10.dp))
-                Text(
-                    "Recently Played",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 15.dp)
-                )
+                itemHeaderText("Recently Played")
             }
             item {
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(150.dp)
-                        .padding(start = 10.dp)
-                ) {
-                    items(count = recentlyItemList.count()) {
-                        val item = recentlyItemList[it]
-                        Card(
-                            modifier = Modifier
-                                .width(100.dp)
-                                .padding(5.dp),
-                            shape = RoundedCornerShape(0.dp)
-                        ) {
-                            Column(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .background(BackgroundColor),
-                                horizontalAlignment = Alignment.Start
-                            ) {
-                                Image(
-                                    painter = painterResource(item.image),
-                                    contentDescription = "",
-                                    modifier = Modifier.size(100.dp)
-                                )
-                                Text(
-                                    item.name,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    lineHeight = 14.sp
-                                )
-                            }
-                        }
-                    }
-                }
+                lazyRowItem(recentlyItemList,150,100,100)
             }
             item {
                 Spacer(Modifier.height(15.dp))
-                Text(
-                    "New Releases for you",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 15.dp)
-                )
+                itemHeaderText("New Releases for you")
             }
             item {
-                LazyRow(
+                lazyRowItem(releasesItemList,200,150,150)
+            }
+            item {
+                Spacer(Modifier.height(10.dp))
+                itemHeaderText("New Releases for you")
+            }
+            item {
+                lazyRowItem(releasesItemList,280,150,150)
+            }
+        }
+    }
+}
+
+@Composable
+fun lazyTopItem(topList: List<TopItem>) {
+    LazyVerticalGrid(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(250.dp)
+            .padding(10.dp),
+        columns = GridCells.Fixed(2)
+    ) {
+        items(topList) { item ->
+            Card(
+                modifier = Modifier.padding(5.dp),
+                shape = RoundedCornerShape(5.dp)
+            ) {
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp)
-                        .padding(start = 10.dp)
+                        .background(TopCardColor),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    items(count = releasesItemList.count()) {
-                        val item = releasesItemList[it]
-                        Card(
-                            modifier = Modifier
-                                .width(150.dp)
-                                .padding(5.dp),
-                            shape = RoundedCornerShape(0.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(BackgroundColor),
-                                horizontalAlignment = Alignment.Start
-                            ) {
-                                Image(
-                                    painter = painterResource(item.image),
-                                    contentDescription = "",
-                                    modifier = Modifier.size(150.dp)
-                                )
-                                Text(
-                                    item.name,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    lineHeight = 14.sp
-                                )
-                            }
-                        }
-                    }
+                    Image(
+                        painter = painterResource(item.image),
+                        contentDescription = "",
+                        modifier = Modifier.size(60.dp, 60.dp)
+                    )
+                    Text(
+                        text = item.name,
+                        color = Color.White,
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(5.dp)
+                    )
                 }
             }
-            item {
-                Spacer(Modifier.height(15.dp))
-                Text(
-                    "New Releases for you",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 15.dp)
-                )
-            }
-            item {
-                LazyRow(
-                    modifier = Modifier
+        }
+    }
+}
+
+@Composable
+fun itemHeaderText(headerText: String) {
+    Text(
+        headerText,
+        color = Color.White,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(start = 15.dp)
+    )
+}
+
+@Composable
+fun lazyRowItem(itemList: List<TopItem>,lazyRowHeight : Int, cardWidth : Int, imageSize : Int) {
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(lazyRowHeight.dp)
+            .padding(start = 10.dp)
+    ) {
+        items(itemList) { item ->
+            Card(
+                modifier = Modifier
+                    .width(cardWidth.dp)
+                    .padding(5.dp),
+                shape = RoundedCornerShape(0.dp)
+            ) {
+                Column(
+                    Modifier
                         .fillMaxWidth()
-                        .height(280.dp)
-                        .padding(start = 10.dp)
+                        .background(BackgroundColor),
+                    horizontalAlignment = Alignment.Start
                 ) {
-                    items(count = releasesItemList.count()) {
-                        val item = releasesItemList[it]
-                        Card(
-                            modifier = Modifier
-                                .width(150.dp)
-                                .padding(5.dp),
-                            shape = RoundedCornerShape(0.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(BackgroundColor),
-                                horizontalAlignment = Alignment.Start
-                            ) {
-                                Image(
-                                    painter = painterResource(item.image),
-                                    contentDescription = "",
-                                    modifier = Modifier.size(150.dp)
-                                )
-                                Text(
-                                    item.name,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    lineHeight = 14.sp
-                                )
-                            }
-                        }
-                    }
+                    Image(
+                        painter = painterResource(item.image),
+                        contentDescription = "",
+                        modifier = Modifier.size(imageSize.dp)
+                    )
+                    Text(
+                        item.name,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        modifier = Modifier.fillMaxWidth(),
+                        lineHeight = 14.sp
+                    )
                 }
             }
         }
